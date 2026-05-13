@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Jobs Dashboard – Việc làm IT mới nhất</title>
+  <meta name="description" content="Khám phá hàng trăm việc làm IT mới nhất từ WebA. Lọc theo địa điểm, cấp độ, và loại hình công việc.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Choices.js cho Multi-select và Search -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">IT</div>
+    <div class="logo-text">IT<span>Jobs</span></div>
+  </div>
+  <button id="analysis-btn" class="analysis-btn" title="Mở Analysis Dashboard">📊 Analysis</button>
+  <span class="header-badge">Powered by WebA</span>
+</header>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <h1>Tìm việc làm IT phù hợp</h1>
+  <p>Hàng trăm cơ hội việc làm công nghệ được cập nhật mỗi ngày</p>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input id="search-input" type="text" placeholder="Tìm theo tên vị trí hoặc công ty...">
+    <button class="clear-btn" id="clear-btn" title="Xóa tìm kiếm">✕</button>
+  </div>
+</section>
+
+<!-- ── FILTERS ── -->
+<div class="filters-bar">
+  <span class="filter-label">Lọc theo:</span>
+  <div class="filter-group">
+    <select id="location-filter" class="filter-select">
+      <option value="">📍 Tất cả địa điểm</option>
+    </select>
+    <select id="level-filter" class="filter-select">
+      <option value="">🏷️ Tất cả cấp độ</option>
+    </select>
+    <select id="job-type-filter" class="filter-select">
+      <option value="">💼 Tất cả loại hình</option>
+    </select>
+    <select id="job-group-filter" class="filter-select">
+      <option value="">👨‍💻 Tất cả nhóm công việc</option>
+    </select>
+    <select id="skill-filter" multiple>
+      <option value="">💡 Tất cả kỹ năng</option>
+    </select>
+    <button class="reset-btn" id="reset-btn">✕ Đặt lại</button>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ── RESULTS INFO ── -->
+<div class="results-info">
+  <span id="result-count"></span>
+</div>
+
+<!-- ── CONTENT ── -->
+<main class="jobs-container">
+  <div id="loading-state">
+    <div class="spinner"></div>
+    <span class="loading-text">Đang tải việc làm...</span>
+  </div>
+
+  <div id="empty-state">
+    <div class="empty-icon">🔭</div>
+    <p class="empty-title">Không tìm thấy kết quả</p>
+    <p class="empty-sub">Thử thay đổi từ khóa hoặc bỏ bớt bộ lọc để có nhiều kết quả hơn.</p>
+  </div>
+
+  <div id="jobs-grid"></div>
+</main>
+
+<!-- ── PAGINATION ── -->
+<div id="pagination"></div>
+
+<!-- ── ANALYSIS MODAL ── -->
+<div id="analysis-modal-overlay" class="modal-overlay"></div>
+<div id="analysis-modal" class="analysis-modal">
+  <div class="modal-header">
+    <h2>📊 Analysis Dashboard</h2>
+    <button class="modal-close-btn" id="modal-close-btn" title="Đóng">✕</button>
+  </div>
+  
+  <div class="modal-body">
+    <!-- Loading State -->
+    <div id="modal-loading-state" class="modal-loading">
+      <div class="spinner"></div>
+      <span>Đang tải dữ liệu...</span>
+    </div>
+
+    <!-- Chart Container - Initially Hidden -->
+    <div id="modal-content" class="modal-content" style="display: none;">
+      
+      <!-- Row 1: Job Category Distribution + Level Distribution -->
+      <div class="charts-row">
+        <div class="chart-container">
+          <h3>Job Categories</h3>
+          <canvas id="chart-job-category"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3>Level Distribution</h3>
+          <canvas id="chart-level-distribution"></canvas>
+        </div>
+      </div>
+
+      <!-- Row 2: Skills by Category (with dropdown) -->
+      <div class="charts-row">
+        <div class="chart-container full-width">
+          <div class="chart-header">
+            <h3>Top Skills by Job Category</h3>
+            <select id="category-select" class="category-dropdown">
+              <option value="">Select a Job Category...</option>
+            </select>
+          </div>
+          <canvas id="chart-skills-by-category"></canvas>
+          <p id="skills-empty-message" class="empty-message" style="display: none;">Select a category to view skills</p>
+        </div>
+      </div>
+
+      <!-- Row 3: Top 10 Skills + Jobs Posted Trend -->
+      <div class="charts-row">
+        <div class="chart-container">
+          <h3>Top 10 Skills (All)</h3>
+          <canvas id="chart-top-skills"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3>Jobs Posted Trend</h3>
+          <canvas id="chart-jobs-trend"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
