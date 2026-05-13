@@ -2,8 +2,6 @@
 
 This section explains how to set up and run the project locally using Docker.
 
----
-
 # 🔧 Prerequisites
 
 Make sure the following tools are installed:
@@ -12,7 +10,6 @@ Make sure the following tools are installed:
 - Docker Compose
 - Python 3.12+ (optional for local development)
 
----
 
 # 📥 Clone Repository
 
@@ -21,7 +18,7 @@ git clone https://github.com/mduy2k5/it-job-etl-pipeline.git
 cd it-job-etl-pipeline
 ```
 
----
+
 
 # ⚙️ Environment Configuration
 
@@ -36,7 +33,7 @@ POSTGRES_PASSWORD=airflow
 POSTGRES_HOST=postgres
 ```
 
----
+
 
 # 🐳 Start Services
 
@@ -58,7 +55,7 @@ Stop services:
 docker compose down
 ```
 
----
+
 
 # 🚀 Access Services
 
@@ -84,7 +81,7 @@ If you have problem when login, you can run this command:
 docker compose exec airflow-webserver airflow users create --username airflow --password airflow --firstname admin --lastname user --role Admin
 ```
 
----
+
 
 # 🕷️ Run Scrapy Crawlers
 
@@ -106,7 +103,7 @@ Run job detail crawler:
 scrapy crawl it_jobs_detail
 ```
 
----
+
 
 # 🧹 Run Data Transformations
 
@@ -123,7 +120,7 @@ python job_crawler/job_skill_requirement_transform.py
 python job_crawler/job_title_transform.py
 ```
 
----
+
 
 # 🔄 Run Airflow DAG
 
@@ -135,7 +132,7 @@ python job_crawler/job_title_transform.py
 
 3. Trigger pipeline manually or wait for scheduler.
 
----
+
 
 # 🌐 Run Flask Web Application
 
