@@ -320,10 +320,6 @@ Potential future enhancements:
 - Default database credentials are for development/demo purposes only
 - Environment variables can be customized using `.env`
 
-# 🔗 Repository
-
-GitHub Repository:  
-https://github.com/mduy2k5/it-job-etl-pipeline
 
 # 👨‍💻 Author
 
